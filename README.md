@@ -5,4 +5,6 @@ A simple script to display logged users and perform Remote Desktop Shadow sessio
 
   
 # Remark
-The file is manually written withoug LLM tool.
+* To perform shadow session the user has to be administrator and Remote Desktop Services must be configured with Shadow session enabled in Group Policy.
+
+*The file is manually written withoug LLM tool.
