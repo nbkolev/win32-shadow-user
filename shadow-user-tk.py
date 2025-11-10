@@ -1,5 +1,5 @@
 from tkinter import *
-import subprocess
+import subprocess, re
 import ctypes
 
 win = Tk()  # creating the main window and storing the window object in 'win'
@@ -17,11 +17,12 @@ def get_output_as_lines(params):
 def get_active_sessions():
     active_sessions = []
     for user_data in get_output_as_lines(['C:\\Windows\\system32\\query.exe', 'session'])[1:-1]:
-        sess_name, user_name, sess_id, conn_state = user_data[1:18].strip(), \
-            user_data[19:43].strip(), int(user_data[43:46].strip()), user_data[47:53].strip()
-        if sess_name in ('services', 'rdp-tcp', 'console') or conn_state == 'Disc':
+        if "services" in user_data or "console" in user_data in user_data:
             continue
-
+        match = re.search(r"rdp-tcp#\d+\s+(?P<name>\w+)\s+(?P<sess_id>\d+)\s+Active", user_data)
+        if not match:
+            continue
+        user_name,sess_id = match.group("name"), match.group("sess_id")
         full_name = "?"
         for line in get_output_as_lines(['C:\\Windows\\system32\\net.exe', 'user', user_name]):
             if 'Full Name' in line:
